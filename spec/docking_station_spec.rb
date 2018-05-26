@@ -33,4 +33,11 @@ end
     expect(subject.bikes).to include bike
   end
 
+  describe '#initialize' do
+    it 'has a default capacity of 20 when no value is passed on initialization' do
+      station = DockingStation.new
+      expect(station.capacity).to eq 20
+    end
+  end
+
 end
