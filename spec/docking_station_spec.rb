@@ -3,7 +3,7 @@ require 'docking_station'
 describe Dockingstation do
   it { is_expected.to respond_to (:release_bike) }
   it { is_expected.to respond_to(:dock_bike).with(1).argument }
-  it { is_expected.to respond_to(:bike) }
+  it { is_expected.to respond_to(:bikes) }
 
 describe '#release_bike' do
   it 'releases a working bike' do
@@ -19,18 +19,18 @@ end
 describe '#dock_bike'
   it 'docks a bike' do
     bike = Bike.new
-    expect(subject.dock_bike(bike)).to eq bike
+    expect(subject.dock_bike(bike)).to include bike
   end
   it 'does not allow bikes to be docked once capacity is reached' do
     bike = Bike.new
-    subject.dock_bike(bike)
+    20.times { subject.dock_bike(bike) }
     expect{ subject.dock_bike(bike) }.to raise_error('docking station is full')
 end
 
   it 'returns docked bikes' do
     bike = Bike.new
     subject.dock_bike(bike)
-    expect(subject.bike).to eq bike
+    expect(subject.bikes).to include bike
   end
 
 end
