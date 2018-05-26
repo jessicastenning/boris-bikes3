@@ -13,6 +13,7 @@ DEFAULT_CAPACITY = 20
 
   def release_bike
     fail "no bikes available" if empty?
+    fail "no working bikes, bike cannot be released" if all_broken?
     @bikes.pop
   end
 
@@ -29,6 +30,10 @@ private
 
   def empty?
     @bikes.empty?
+  end
+
+  def all_broken?
+    bikes.all? {|bike| bike.broken? }
   end
 
 end
