@@ -16,10 +16,16 @@ describe '#release_bike' do
   end
 end
 
+describe '#dock_bike'
   it 'docks a bike' do
     bike = Bike.new
     expect(subject.dock_bike(bike)).to eq bike
   end
+  it 'does not allow bikes to be docked once capacity is reached' do
+    bike = Bike.new
+    subject.dock_bike(bike)
+    expect{ subject.dock_bike(bike) }.to raise_error('docking station is full')
+end
 
   it 'returns docked bikes' do
     bike = Bike.new
