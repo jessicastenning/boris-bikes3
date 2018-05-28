@@ -1,13 +1,11 @@
 require 'docking_station'
 
 describe DockingStation do
-  it { is_expected.to respond_to (:release_bike) }
-  it { is_expected.to respond_to(:dock_bike).with(1).argument }
-  it { is_expected.to respond_to(:bikes) }
+  let(:bike) { double :bike, working: true, broken?: false }
+  let(:broken_bike) { double :broken_bike, working: false, broken?: true }
 
   describe '#release_bike' do
     it 'releases a working bike' do
-      bike = Bike.new
       subject.dock_bike(bike)
       expect(subject.release_bike).to eq bike
     end
@@ -15,41 +13,35 @@ describe DockingStation do
       expect{ subject.release_bike }. to raise_error('no bikes available')
     end
     it 'does not release broken bikes' do
-      bike = Bike.new
-      bike.report_broken
-      subject.dock_bike(bike)
+      subject.dock_bike(broken_bike)
       expect{ subject.release_bike }. to raise_error('no working bikes, bike cannot be released')
     end
   end
 
   describe '#dock_bike' do
     it 'docks a bike' do
-      bike = Bike.new
       expect(subject.dock_bike(bike)).to include bike
     end
     it 'does not allow bikes to be docked once capacity is reached' do
-      bike = Bike.new
       DockingStation::DEFAULT_CAPACITY.times { subject.dock_bike(bike) }
       expect{ subject.dock_bike(bike) }.to raise_error('docking station is full')
     end
     it 'allows broken bikes to be docked' do
-      bike = Bike.new
-      bike.report_broken
+      subject.dock_bike(broken_bike)
+      expect(subject.bikes).to include broken_bike
+    end
+  end
+
+  describe '#bikes' do
+    it 'returns docked bikes' do
       subject.dock_bike(bike)
       expect(subject.bikes).to include bike
     end
   end
-
-    it 'returns docked bikes' do
-      bike = Bike.new
-      subject.dock_bike(bike)
-      expect(subject.bikes).to include bike
-    end
-
+  
   describe '#initialize' do
     it 'has a default capacity of 20 when no value is passed on initialization' do
-      station = DockingStation.new
-      expect(station.capacity).to eq 20
+      expect(subject.capacity).to eq 20
     end
   end
 end
